@@ -3,7 +3,7 @@ package br.escola.bibliohaydee.model;
 public class Livro {
     private String titulo;
     private String isbn;
-    private Autor autor;
+    private Autor autor;          // referência a outro objeto
     private int anoPublicacao;
     private String genero;
     private boolean disponivel;
@@ -15,7 +15,7 @@ public class Livro {
         this.autor = autor;
         this.anoPublicacao = anoPublicacao;
         this.genero = genero;
-        this.disponivel = true;
+        this.disponivel = true;   // todo livro nasce disponível
     }
 
     public String getTitulo() {

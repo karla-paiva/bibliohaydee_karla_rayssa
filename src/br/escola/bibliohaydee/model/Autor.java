@@ -13,7 +13,10 @@ public class Autor {
     }
 
     public void setNome(String nome) {
-        this.nome = nome;
+        if (nome == null || nome.trim().isEmpty()) {
+            throw new IllegalArgumentException("o nome do autor não pode ser vazio.");
+        }
+        this.nome = nome.trim();
     }
 
     public String getNacionalidade() {

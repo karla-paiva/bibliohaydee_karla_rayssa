@@ -10,6 +10,9 @@ public class Livro {
 
     public Livro(String titulo, String isbn, Autor autor,
                  int anoPublicacao, String genero) {
+        if (autor == null) {
+            throw new IllegalArgumentException("cadastre ou selecione um autor antes de criar o livro.");
+        }
         this.titulo = titulo;
         this.isbn = isbn;
         this.autor = autor;

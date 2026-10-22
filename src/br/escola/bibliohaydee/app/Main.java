@@ -1,26 +1,47 @@
-package br.escola.bibliohaydee.app;
 
 import br.escola.bibliohaydee.model.Autor;
 import br.escola.bibliohaydee.model.Livro;
 
-public class Main {
-    static void main() {
-        Autor autor = new Autor();
-        autor.setNome("Machado de Assis");
-        autor.setNacionalidade("brasileiro");
-        autor.setAnoNascimento(1990);
+void main() {
+    Autor [] autores = new Autor[5];
+    Livro [] livros = new Livro[10];
+    int qtdAutores = 0;
+    int qtdLivros = 0;
 
-        Autor outroAutor = new Autor();
-        outroAutor.setNome("Ricardo Vasconcelos");
-        outroAutor.setNacionalidade("brasileiro");
-        outroAutor.setAnoNascimento(1840);
+    IO.println("=========== BIBLIOHAYDÉE ===========");
+    listarAcervo(livros, qtdLivros);
 
-        Livro livro = new Livro("Dom Casmurro", "123456789", autor, 2000, "Ação");
-        Livro livro2 = new Livro("Dom Casmurro", "123456789", outroAutor, 2000, "Ação");
+    Autor harper = new Autor();
+    autores[qtdAutores] = harper;
+    qtdAutores++;
 
+    IO.println("\nAutor cadastrado: " + harper);
+
+    Livro livro = new Livro(
+            "O Sol é Para Todos",
+            "9788535905151",
+            harper,
+            2004,
+            "Romance ficcional"
+    );
+
+    livros[qtdLivros] = livro;
+    qtdLivros++;
+
+    listarAcervo(livros, qtdLivros);
+}
+
+static void listarAcervo(Livro[] acervo, int qtdLivros){
+    IO.println("=========== ACERVO ===========");
+    if (qtdLivros == 0){
+        IO.println("Acervo vazio.");
+        return;
+    }
+
+    for (Livro livro : acervo){
+        if (livro == null){
+            break;
+        }
         IO.println(livro);
-        IO.println(livro2);
     }
-
-    }
-
+}

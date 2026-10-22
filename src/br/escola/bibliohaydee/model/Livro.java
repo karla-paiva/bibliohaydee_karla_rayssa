@@ -10,39 +10,12 @@ public class Livro {
 
     public Livro(String titulo, String isbn, Autor autor,
                  int anoPublicacao, String genero) {
-        if (autor == null) {
-            throw new IllegalArgumentException("cadastre ou selecione um autor antes de criar o livro.");
-        }
         this.titulo = titulo;
         this.isbn = isbn;
         this.autor = autor;
         this.anoPublicacao = anoPublicacao;
         this.genero = genero;
-        this.disponivel = true;   // todo livro nasce disponível
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public Autor getAutor() {
-        return autor;
-    }
-
-    public int getAnoPublicacao() {
-        return anoPublicacao;
-    }
-
-    public String getGenero() {
-        return genero;
-    }
-
-    public boolean isDisponivel() {
-        return disponivel;
+        this.disponivel = true;
     }
 
     @Override

@@ -1,30 +1,30 @@
 package br.escola.bibliohaydee.model;
 
 public class Livro {
-    private String titulo;
-    private String isbn;
-    private Autor autor;
-    private int anoPublicacao;
-    private String genero;
-    private boolean disponivel;
+    String titulo;
+    String isbn;
+    Autor autor;
+    Integer anoDePublicacao;
+    String genero;
+    boolean disponibilidade;
 
-    public Livro(String titulo, String isbn, Autor autor,
-                 int anoPublicacao, String genero) {
-        this.titulo = titulo;
-        this.isbn = isbn;
-        this.autor = autor;
-        this.anoPublicacao = anoPublicacao;
-        this.genero = genero;
-        this.disponivel = true;
+    public Livro(String tituloLivro, String isbnLivro, Autor autorLivro, int anoDePublicacaoLivro, String generoLivro) {
+        titulo = tituloLivro;
+        isbn = isbnLivro;
+        autor = autorLivro;
+        anoDePublicacao = anoDePublicacaoLivro;
+        genero = generoLivro;
+        disponibilidade = true;
     }
 
     @Override
     public String toString() {
-        return "Livro: " + titulo
-                + " | ISBN: " + isbn
-                + " | Autor: " + autor.getNome()
-                + " | Ano: " + anoPublicacao
-                + " | Gênero: " + genero
-                + " | " + (disponivel ? "Disponível" : "Indisponível");
+        return "Titulo: " + titulo +
+                " | ISBN : " + isbn +
+                "\nAutor : " + autor +
+                "\nAno de publicação: " + anoDePublicacao +
+                " | Gênero: " + genero +
+                " | Disponibilidade : " + (disponibilidade ? "disponível" : "emprestado");
     }
+
 }

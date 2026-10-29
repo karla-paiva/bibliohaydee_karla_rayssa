@@ -3,17 +3,17 @@ import br.escola.bibliohaydee.model.Autor;
 import br.escola.bibliohaydee.model.Livro;
 import br.escola.bibliohaydee.model.Usuario;
 
-
 void main() {
-    Autor [] autores = new Autor[5];
-    Livro [] livros = new Livro[10];
+
+    Autor[] autores = new Autor[5];
+    Livro[] livros = new Livro[10];
     Usuario[] usuarios = new Usuario[10];
+
     int qtdUsuarios = 0;
     int qtdAutores = 0;
     int qtdLivros = 0;
 
     IO.println("=========== BIBLIOHAYDÉE ===========");
-    listarAcervo(livros, qtdLivros);
 
     Autor harper = new Autor();
     autores[qtdAutores] = harper;
@@ -32,6 +32,16 @@ void main() {
     livros[qtdLivros] = livro;
     qtdLivros++;
 
+    Livro livroSemGenero = new Livro(
+            "Livro de teste",
+            "123456789",
+            harper,
+            2020
+    );
+
+    livros[qtdLivros] = livroSemGenero;
+    qtdLivros++;
+
     listarAcervo(livros, qtdLivros);
 
     IO.println("\n=========== CADASTRO DE USUÁRIO ===========");
@@ -40,10 +50,11 @@ void main() {
 
     do {
         nome = IO.readln("Digite o nome: ");
-        if (nome.isBlank()) {
+
+        if (nome == null || nome.isBlank()) {
             IO.println("Nome inválido. Digite novamente.");
         }
-    } while (nome.isBlank());
+    } while (nome == null || nome.isBlank());
 
     String matricula;
 
@@ -51,61 +62,192 @@ void main() {
         matricula = IO.readln("Digite a matrícula: ").trim();
 
         if (matricula.isEmpty()) {
-            IO.println("Matrícula não pode ficar vazia. Digite novamente.");
+            IO.println(
+                    "Matrícula não pode ficar vazia. Digite novamente."
+            );
         }
     } while (matricula.isEmpty());
 
     String tipo;
+
     do {
-        tipo = IO.readln("Digite o tipo (ALUNO ou PROFESSOR): ");
+        tipo = IO.readln(
+                "Digite o tipo (ALUNO ou PROFESSOR): "
+        ).trim().toUpperCase();
 
-        if (!tipo.equals("ALUNO") && !tipo.equals("PROFESSOR")) {
-            IO.println("Tipo inválido. Digite ALUNO ou PROFESSOR.");
-        }
-    } while (!tipo.equals("ALUNO") && !tipo.equals("PROFESSOR"));
-
-    Integer limite = null;
-
-    while (limite == null) {
-        try {
-            limite = Integer.parseInt(
-                    IO.readln("Digite o limite de empréstimos: ")
+        if (!tipo.equals("ALUNO") &&
+                !tipo.equals("PROFESSOR")) {
+            IO.println(
+                    "Tipo inválido. Digite ALUNO ou PROFESSOR."
             );
-
-            if (limite < 0) {
-                IO.println("O limite não pode ser negativo.");
-                limite = null;
-            }
-        } catch (NumberFormatException e) {
-            IO.println("Digite um número inteiro válido.");
         }
-    }
+    } while (!tipo.equals("ALUNO") &&
+            !tipo.equals("PROFESSOR"));
 
-    Usuario usuario = new Usuario(nome, matricula, tipo, limite);
+    String definirLimite;
+
+    do {
+        definirLimite = IO.readln(
+                "Definir o limite? (S/N): "
+        ).trim().toUpperCase();
+
+        if (!definirLimite.equals("S") &&
+                !definirLimite.equals("N")) {
+            IO.println("Digite S para sim ou N para não.");
+        }
+    } while (!definirLimite.equals("S") &&
+            !definirLimite.equals("N"));
+
+    Usuario usuario;
+
+    if (definirLimite.equals("S")) {
+
+        int limite = lerNumeroInteiro(
+                "Digite o limite de empréstimos: "
+        );
+
+        while (limite < 1) {
+            IO.println("O limite deve ser maior que zero.");
+
+            limite = lerNumeroInteiro(
+                    "Digite o limite de empréstimos: "
+            );
+        }
+
+        usuario = new Usuario(nome, matricula, tipo, limite);
+
+    } else {
+        usuario = new Usuario(nome, matricula, tipo);
+    }
 
     usuarios[qtdUsuarios] = usuario;
     qtdUsuarios++;
 
     IO.println("\nUsuário cadastrado com sucesso!");
-    IO.println("Nome: " + usuario.getNome());
-    IO.println("Matrícula: " + usuario.getMatricula());
-    IO.println("Tipo: " + usuario.getTipo());
-    IO.println("Limite de empréstimos: " + usuario.getLimiteEmprestimos());
-    IO.println("Empréstimos ativos: " + usuario.getEmprestimosAtivos());
+    mostrarUsuario(usuario);
+
+    IO.println("\n=========== ALTERAR USUÁRIO ===========");
+
+    String matriculaBusca = IO.readln(
+            "Digite a matrícula do usuário que deseja alterar: "
+    ).trim();
+
+    Usuario usuarioEncontrado = buscarUsuario(
+            usuarios, qtdUsuarios, matriculaBusca
+    );
+
+    if (usuarioEncontrado == null) {
+
+        IO.println(
+                "Usuário não localizado. Nenhuma alteração feita."
+        );
+
+    } else {
+
+        IO.println("\nUsuário encontrado:");
+        mostrarUsuario(usuarioEncontrado);
+
+        IO.println("\n1 - Alterar nome");
+        IO.println("2 - Alterar limite de empréstimos");
+
+        String opcao = IO.readln("Escolha uma opção: ").trim();
+
+        if (opcao.equals("1")) {
+
+            String novoNome = IO.readln("Digite o novo nome: ");
+
+            if (usuarioEncontrado.setNome(novoNome)) {
+                IO.println("Nome alterado com sucesso!");
+            } else {
+                IO.println(
+                        "Nome inválido. Nenhuma alteração feita."
+                );
+            }
+
+        } else if (opcao.equals("2")) {
+
+            int novoLimite = lerNumeroInteiro(
+                    "Digite o novo limite: "
+            );
+
+            if (usuarioEncontrado.setLimiteEmprestimos(novoLimite)) {
+                IO.println("Limite alterado com sucesso!");
+            } else {
+                IO.println(
+                        "Limite inválido. Nenhuma alteração feita."
+                );
+            }
+
+        } else {
+            IO.println(
+                    "Opção inválida. Nenhuma alteração feita."
+            );
+        }
+
+        IO.println("\nDados atuais do usuário:");
+        mostrarUsuario(usuarioEncontrado);
+    }
 }
 
+static int lerNumeroInteiro(String mensagem) {
 
-static void listarAcervo(Livro[] acervo, int qtdLivros){
-    IO.println("=========== ACERVO ===========");
-    if (qtdLivros == 0){
+    while (true) {
+        try {
+            return Integer.parseInt(
+                    IO.readln(mensagem).trim()
+            );
+        } catch (NumberFormatException e) {
+            IO.println(
+                    "Digite um número inteiro válido. Tente novamente."
+            );
+        }
+    }
+}
+
+static void listarAcervo(Livro[] acervo, int qtdLivros) {
+
+    IO.println("\n=========== ACERVO ===========");
+
+    if (qtdLivros == 0) {
         IO.println("Acervo vazio.");
         return;
     }
 
-    for (Livro livro : acervo){
-        if (livro == null){
-            break;
+    for (int i = 0; i < qtdLivros; i++) {
+        if (acervo[i] != null) {
+            IO.println(acervo[i]);
+            IO.println();
         }
-        IO.println(livro);
     }
+}
+
+static Usuario buscarUsuario(
+        Usuario[] usuarios,
+        int qtdUsuarios,
+        String matricula) {
+
+    for (int i = 0; i < qtdUsuarios; i++) {
+
+        if (usuarios[i] != null &&
+                usuarios[i].getMatricula().equals(matricula)) {
+            return usuarios[i];
+        }
+    }
+
+    return null;
+}
+
+static void mostrarUsuario(Usuario usuario) {
+
+    IO.println("Nome: " + usuario.getNome());
+    IO.println("Matrícula: " + usuario.getMatricula());
+    IO.println("Tipo: " + usuario.getTipo());
+    IO.println(
+            "Limite de empréstimos: "
+                    + usuario.getLimiteEmprestimos()
+    );
+    IO.println(
+            "Empréstimos ativos: "
+                    + usuario.getEmprestimosAtivos()
+    );
 }

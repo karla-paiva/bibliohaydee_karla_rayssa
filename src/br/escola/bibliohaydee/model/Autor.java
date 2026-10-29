@@ -1,9 +1,9 @@
 package br.escola.bibliohaydee.model;
 
 public class Autor {
-    String nome;
-    String nacionalidade;
-    Integer anoDeNascimento;
+    private String nome;
+    private String nacionalidade;
+    private Integer anoDeNascimento;
 
     public Autor() {
         nome = "Harper Lee";

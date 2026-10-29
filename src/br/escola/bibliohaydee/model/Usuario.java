@@ -1,19 +1,27 @@
+
 package br.escola.bibliohaydee.model;
 
 public class Usuario {
 
+    public static final int LIMITE_PADRAO = 3;
+
     private String nome;
     private String matricula;
-    private String tipo; // somente ALUNO ou PROFESSOR
+    private String tipo;
     private Integer limiteEmprestimos;
-    private Integer emprestimosAtivos; // começa em zero
+    private Integer emprestimosAtivos;
 
     public Usuario(String nomeUsuario, String matriculaUsuario,
                    String tipoUsuario, Integer limiteUsuario) {
 
-        if (nomeUsuario == null || nomeUsuario.isBlank()) {
+        if (!nomeValido(nomeUsuario)) {
             throw new IllegalArgumentException(
                     "Nome não pode ser nulo ou vazio");
+        }
+
+        if (matriculaUsuario == null || matriculaUsuario.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Matrícula não pode ser vazia");
         }
 
         if (tipoUsuario == null ||
@@ -23,11 +31,31 @@ public class Usuario {
                     "Tipo deve ser ALUNO ou PROFESSOR");
         }
 
-        nome = nomeUsuario;
-        matricula = matriculaUsuario;
+        if (limiteUsuario == null || limiteUsuario < 1) {
+            throw new IllegalArgumentException(
+                    "Limite deve ser maior que zero");
+        }
+
+        nome = nomeUsuario.trim();
+        matricula = matriculaUsuario.trim();
         tipo = tipoUsuario;
         limiteEmprestimos = limiteUsuario;
         emprestimosAtivos = 0;
+    }
+
+    public Usuario(String nomeUsuario, String matriculaUsuario,
+                   String tipoUsuario) {
+
+        this(nomeUsuario, matriculaUsuario, tipoUsuario,
+                LIMITE_PADRAO);
+    }
+
+    private static boolean nomeValido(String nome) {
+        return nome != null && !nome.isBlank();
+    }
+
+    private static boolean limiteValido(int limite) {
+        return limite >= 1;
     }
 
     public String getNome() {
@@ -50,19 +78,30 @@ public class Usuario {
         return emprestimosAtivos;
     }
 
-    public void setNome(String novoNome) {
-        if (novoNome == null || novoNome.isBlank()) {
-            throw new IllegalArgumentException("Nome inválido");
+    public boolean setNome(String novoNome) {
+        if (!nomeValido(novoNome)) {
+            return false;
         }
-        nome = novoNome;
+
+        nome = novoNome.trim();
+        return true;
     }
 
-    public void setTipo(String novoTipo) {
-        if (novoTipo == null ||
-                (!novoTipo.equals("ALUNO") &&
-                        !novoTipo.equals("PROFESSOR"))) {
-            throw new IllegalArgumentException("Tipo inválido");
+    public boolean setLimiteEmprestimos(int novoLimite) {
+        if (!limiteValido(novoLimite)) {
+            return false;
         }
-        tipo = novoTipo;
+
+        limiteEmprestimos = novoLimite;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Nome: " + nome
+                + " | Matrícula: " + matricula
+                + " | Tipo: " + tipo
+                + " | Limite de empréstimos: " + limiteEmprestimos
+                + " | Empréstimos ativos: " + emprestimosAtivos;
     }
 }

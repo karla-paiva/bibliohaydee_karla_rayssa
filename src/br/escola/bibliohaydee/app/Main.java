@@ -1,253 +1,276 @@
+package br.escola.bibliohaydee.app;
 
 import br.escola.bibliohaydee.model.Autor;
 import br.escola.bibliohaydee.model.Livro;
-import br.escola.bibliohaydee.model.Usuario;
 
-void main() {
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Locale;
 
-    Autor[] autores = new Autor[5];
-    Livro[] livros = new Livro[10];
-    Usuario[] usuarios = new Usuario[10];
+public class Main {
 
-    int qtdUsuarios = 0;
-    int qtdAutores = 0;
-    int qtdLivros = 0;
+    static Scanner scanner = new Scanner(System.in);
 
-    IO.println("=========== BIBLIOHAYDÉE ===========");
+    public static void main(String[] args) {
 
-    Autor harper = new Autor();
-    autores[qtdAutores] = harper;
-    qtdAutores++;
+        ArrayList<Autor> autores = new ArrayList<>();
+        ArrayList<Livro> livros = new ArrayList<>();
 
-    IO.println("\nAutor cadastrado: " + harper);
+        carregarAcervoTeste(autores, livros);
 
-    Livro livro = new Livro(
-            "O Sol é Para Todos",
-            "9788535905151",
-            harper,
-            2004,
-            "Romance ficcional"
-    );
+        System.out.println("=========== BIBLIOTECA HAYDEÉ ===========");
+        listarAcervo(livros);
 
-    livros[qtdLivros] = livro;
-    qtdLivros++;
+        int opcao;
 
-    Livro livroSemGenero = new Livro(
-            "Livro de teste",
-            "123456789",
-            harper,
-            2020
-    );
+        do {
+            System.out.println("\n=========== MENU PRINCIPAL ===========");
+            System.out.println("1 - Pesquisar por título");
+            System.out.println("2 - Pesquisar por autor");
+            System.out.println("3 - Gerar relatório do acervo");
+            System.out.println("0 - Sair");
 
-    livros[qtdLivros] = livroSemGenero;
-    qtdLivros++;
+            System.out.print("Escolha uma opção: ");
 
-    listarAcervo(livros, qtdLivros);
+            try {
+                opcao = Integer.parseInt(scanner.nextLine());
 
-    IO.println("\n=========== CADASTRO DE USUÁRIO ===========");
+                switch (opcao) {
 
-    String nome;
+                    case 1:
+                        pesquisarPorTitulo(livros);
+                        break;
 
-    do {
-        nome = IO.readln("Digite o nome: ");
+                    case 2:
+                        pesquisarPorAutor(livros);
+                        break;
 
-        if (nome == null || nome.isBlank()) {
-            IO.println("Nome inválido. Digite novamente.");
-        }
-    } while (nome == null || nome.isBlank());
+                    case 3:
+                        gerarRelatorioAcervo(livros);
+                        break;
 
-    String matricula;
+                    case 0:
+                        System.out.println("Programa encerrado.");
+                        break;
 
-    do {
-        matricula = IO.readln("Digite a matrícula: ").trim();
+                    default:
+                        System.out.println("Opção inválida.");
+                }
 
-        if (matricula.isEmpty()) {
-            IO.println(
-                    "Matrícula não pode ficar vazia. Digite novamente."
-            );
-        }
-    } while (matricula.isEmpty());
+            } catch (NumberFormatException e) {
+                opcao = -1;
+                System.out.println("Digite uma opção válida.");
+            }
 
-    String tipo;
+        } while (opcao != 0);
 
-    do {
-        tipo = IO.readln(
-                "Digite o tipo (ALUNO ou PROFESSOR): "
-        ).trim().toUpperCase();
-
-        if (!tipo.equals("ALUNO") &&
-                !tipo.equals("PROFESSOR")) {
-            IO.println(
-                    "Tipo inválido. Digite ALUNO ou PROFESSOR."
-            );
-        }
-    } while (!tipo.equals("ALUNO") &&
-            !tipo.equals("PROFESSOR"));
-
-    String definirLimite;
-
-    do {
-        definirLimite = IO.readln(
-                "Definir o limite? (S/N): "
-        ).trim().toUpperCase();
-
-        if (!definirLimite.equals("S") &&
-                !definirLimite.equals("N")) {
-            IO.println("Digite S para sim ou N para não.");
-        }
-    } while (!definirLimite.equals("S") &&
-            !definirLimite.equals("N"));
-
-    Usuario usuario;
-
-    if (definirLimite.equals("S")) {
-
-        int limite = lerNumeroInteiro(
-                "Digite o limite de empréstimos: "
-        );
-
-        while (limite < 1) {
-            IO.println("O limite deve ser maior que zero.");
-
-            limite = lerNumeroInteiro(
-                    "Digite o limite de empréstimos: "
-            );
-        }
-
-        usuario = new Usuario(nome, matricula, tipo, limite);
-
-    } else {
-        usuario = new Usuario(nome, matricula, tipo);
+        scanner.close();
     }
 
-    usuarios[qtdUsuarios] = usuario;
-    qtdUsuarios++;
+    private static void carregarAcervoTeste(
+            ArrayList<Autor> autores,
+            ArrayList<Livro> livros) {
 
-    IO.println("\nUsuário cadastrado com sucesso!");
-    mostrarUsuario(usuario);
+        Autor machado = new Autor(
+                "Machado de Assis", "brasileira", 1839);
+        autores.add(machado);
 
-    IO.println("\n=========== ALTERAR USUÁRIO ===========");
+        Autor graciliano = new Autor(
+                "Graciliano Ramos", "brasileira", 1892);
+        autores.add(graciliano);
 
-    String matriculaBusca = IO.readln(
-            "Digite a matrícula do usuário que deseja alterar: "
-    ).trim();
+        Autor aluisio = new Autor(
+                "Aluísio Azevedo", "brasileira", 1857);
+        autores.add(aluisio);
 
-    Usuario usuarioEncontrado = buscarUsuario(
-            usuarios, qtdUsuarios, matriculaBusca
-    );
+        Autor jorge = new Autor(
+                "Jorge Amado", "brasileira", 1912);
+        autores.add(jorge);
 
-    if (usuarioEncontrado == null) {
+        livros.add(new Livro(
+                "Dom Casmurro",
+                "9788525406958",
+                machado,
+                1899,
+                "Romance"
+        ));
 
-        IO.println(
-                "Usuário não localizado. Nenhuma alteração feita."
-        );
+        livros.add(new Livro(
+                "Memórias Póstumas de Brás Cubas",
+                "9788525406959",
+                machado,
+                1881,
+                "Romance"
+        ));
 
-    } else {
+        livros.add(new Livro(
+                "Quincas Borba",
+                "9788525406960",
+                machado,
+                1891,
+                "Romance"
+        ));
 
-        IO.println("\nUsuário encontrado:");
-        mostrarUsuario(usuarioEncontrado);
+        livros.add(new Livro(
+                "Vidas Secas",
+                "9788579028497",
+                graciliano,
+                1938,
+                "Romance"
+        ));
 
-        IO.println("\n1 - Alterar nome");
-        IO.println("2 - Alterar limite de empréstimos");
+        livros.add(new Livro(
+                "O Cortiço",
+                "9788535910668",
+                aluisio,
+                1890,
+                "Romance"
+        ));
 
-        String opcao = IO.readln("Escolha uma opção: ").trim();
+        livros.add(new Livro(
+                "Capitães da Areia",
+                "9788535911696",
+                jorge,
+                1937,
+                "Romance"
+        ));
+    }
 
-        if (opcao.equals("1")) {
+    private static void listarAcervo(ArrayList<Livro> livros) {
 
-            String novoNome = IO.readln("Digite o novo nome: ");
+        System.out.println("\n=========== ACERVO ===========");
 
-            if (usuarioEncontrado.setNome(novoNome)) {
-                IO.println("Nome alterado com sucesso!");
-            } else {
-                IO.println(
-                        "Nome inválido. Nenhuma alteração feita."
-                );
+        if (livros.isEmpty()) {
+            System.out.println("Acervo vazio.");
+            return;
+        }
+
+        for (Livro livro : livros) {
+            System.out.println("\n" + livro);
+        }
+    }
+
+    private static void pesquisarPorTitulo(ArrayList<Livro> livros) {
+
+        System.out.println("\n=========== PESQUISAR POR TÍTULO ===========");
+
+        System.out.print("Digite parte do título: ");
+        String termo = scanner.nextLine();
+
+        if (termo == null || termo.isBlank()) {
+            System.out.println("O termo de pesquisa não pode ser vazio.");
+            return;
+        }
+
+        termo = termo.trim().toLowerCase(Locale.ROOT);
+
+        boolean encontrou = false;
+
+        for (Livro livro : livros) {
+
+            String titulo = livro.getTitulo()
+                    .trim()
+                    .toLowerCase(Locale.ROOT);
+
+            if (titulo.contains(termo)) {
+
+                System.out.println("\n" + livro);
+                encontrou = true;
+            }
+        }
+
+        if (!encontrou) {
+            System.out.println("Nenhum livro encontrado.");
+        }
+    }
+
+    private static void pesquisarPorAutor(ArrayList<Livro> livros) {
+
+        System.out.println("\n=========== PESQUISAR POR AUTOR ===========");
+
+        System.out.print("Digite o nome ou sobrenome do autor: ");
+        String termo = scanner.nextLine();
+
+        if (termo == null || termo.isBlank()) {
+            System.out.println("O nome do autor não pode ser vazio.");
+            return;
+        }
+
+        termo = termo.trim().toLowerCase(Locale.ROOT);
+
+        boolean encontrou = false;
+
+        for (Livro livro : livros) {
+
+            String nomeAutor = livro.getAutor()
+                    .getNome()
+                    .trim()
+                    .toLowerCase(Locale.ROOT);
+
+            boolean nomeCompleto = nomeAutor.equals(termo);
+
+            boolean encontrouParte = false;
+
+            String[] partesNome = nomeAutor.split("\\s+");
+
+            for (String parte : partesNome) {
+
+                if (parte.equals(termo)) {
+                    encontrouParte = true;
+                    break;
+                }
             }
 
-        } else if (opcao.equals("2")) {
+            if (nomeCompleto || encontrouParte) {
 
-            int novoLimite = lerNumeroInteiro(
-                    "Digite o novo limite: "
-            );
-
-            if (usuarioEncontrado.setLimiteEmprestimos(novoLimite)) {
-                IO.println("Limite alterado com sucesso!");
-            } else {
-                IO.println(
-                        "Limite inválido. Nenhuma alteração feita."
-                );
+                System.out.println("\n" + livro);
+                encontrou = true;
             }
+        }
+
+        if (!encontrou) {
+            System.out.println("Nenhum autor encontrado.");
+        }
+    }
+
+
+    private static void gerarRelatorioAcervo(ArrayList<Livro> livros) {
+
+        StringBuilder relatorio = new StringBuilder();
+
+        relatorio.append("\n=========== RELATÓRIO DO ACERVO ===========\n");
+
+        if (livros.isEmpty()) {
+
+            relatorio.append("Não há livros cadastrados.\n");
 
         } else {
-            IO.println(
-                    "Opção inválida. Nenhuma alteração feita."
-            );
+
+            int numero = 1;
+
+            for (Livro livro : livros) {
+
+                relatorio.append("\nLivro ").append(numero).append("\n");
+
+                relatorio.append("Título: ")
+                        .append(livro.getTitulo()).append("\n");
+
+                relatorio.append("Autor: ")
+                        .append(livro.getAutor().getNome()).append("\n");
+
+                relatorio.append("Disponibilidade: ")
+                        .append(livro.isDisponibilidade()
+                                ? "Disponível" : "Emprestado")
+                        .append("\n");
+
+                numero++;
+            }
+
+            relatorio.append("\nTotal de livros: ")
+                    .append(livros.size())
+                    .append("\n");
         }
 
-        IO.println("\nDados atuais do usuário:");
-        mostrarUsuario(usuarioEncontrado);
+        System.out.println(relatorio.toString());
     }
-}
-
-static int lerNumeroInteiro(String mensagem) {
-
-    while (true) {
-        try {
-            return Integer.parseInt(
-                    IO.readln(mensagem).trim()
-            );
-        } catch (NumberFormatException e) {
-            IO.println(
-                    "Digite um número inteiro válido. Tente novamente."
-            );
-        }
-    }
-}
-
-static void listarAcervo(Livro[] acervo, int qtdLivros) {
-
-    IO.println("\n=========== ACERVO ===========");
-
-    if (qtdLivros == 0) {
-        IO.println("Acervo vazio.");
-        return;
-    }
-
-    for (int i = 0; i < qtdLivros; i++) {
-        if (acervo[i] != null) {
-            IO.println(acervo[i]);
-            IO.println();
-        }
-    }
-}
-
-static Usuario buscarUsuario(
-        Usuario[] usuarios,
-        int qtdUsuarios,
-        String matricula) {
-
-    for (int i = 0; i < qtdUsuarios; i++) {
-
-        if (usuarios[i] != null &&
-                usuarios[i].getMatricula().equals(matricula)) {
-            return usuarios[i];
-        }
-    }
-
-    return null;
-}
-
-static void mostrarUsuario(Usuario usuario) {
-
-    IO.println("Nome: " + usuario.getNome());
-    IO.println("Matrícula: " + usuario.getMatricula());
-    IO.println("Tipo: " + usuario.getTipo());
-    IO.println(
-            "Limite de empréstimos: "
-                    + usuario.getLimiteEmprestimos()
-    );
-    IO.println(
-            "Empréstimos ativos: "
-                    + usuario.getEmprestimosAtivos()
-    );
 }

@@ -22,21 +22,38 @@ public class Livro {
         disponibilidade = true;
     }
 
-    public Livro(String tituloLivro, String isbnLivro,
-                 Autor autorLivro, int anoDePublicacaoLivro) {
+    public String getTitulo() {
+        return titulo;
+    }
 
-        this(tituloLivro, isbnLivro, autorLivro,
-                anoDePublicacaoLivro, "Não informado");
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public Autor getAutor() {
+        return autor;
+    }
+
+    public Integer getAnoDePublicacao() {
+        return anoDePublicacao;
+    }
+
+    public String getGenero() {
+        return genero;
+    }
+
+    public boolean isDisponibilidade() {
+        return disponibilidade;
     }
 
     @Override
     public String toString() {
         return "Título: " + titulo
                 + " | ISBN: " + isbn
-                + "\nAutor: " + autor
+                + "\nAutor: " + autor.getNome()
                 + "\nAno de publicação: " + anoDePublicacao
                 + " | Gênero: " + genero
                 + " | Disponibilidade: "
-                + (disponibilidade ? "disponível" : "emprestado");
+                + (disponibilidade ? "Disponível" : "Emprestado");
     }
 }

@@ -6,20 +6,19 @@ public class Livro {
     private String titulo;
     private String isbn;
     private Autor autor;
-    private Integer anoDePublicacao;
+    private int anoDePublicacao;
     private String genero;
     private boolean disponibilidade;
 
-    public Livro(String tituloLivro, String isbnLivro,
-                 Autor autorLivro, int anoDePublicacaoLivro,
-                 String generoLivro) {
+    public Livro(String titulo, String isbn, Autor autor,
+                 int anoDePublicacao, String genero) {
 
-        titulo = tituloLivro;
-        isbn = isbnLivro;
-        autor = autorLivro;
-        anoDePublicacao = anoDePublicacaoLivro;
-        genero = generoLivro;
-        disponibilidade = true;
+        this.titulo = titulo;
+        this.isbn = isbn;
+        this.autor = autor;
+        this.anoDePublicacao = anoDePublicacao;
+        this.genero = genero;
+        this.disponibilidade = true;
     }
 
     public String getTitulo() {
@@ -34,7 +33,7 @@ public class Livro {
         return autor;
     }
 
-    public Integer getAnoDePublicacao() {
+    public int getAnoDePublicacao() {
         return anoDePublicacao;
     }
 
@@ -42,18 +41,29 @@ public class Livro {
         return genero;
     }
 
-    public boolean isDisponibilidade() {
+    public boolean estaDisponivel() {
         return disponibilidade;
     }
 
+    public boolean emprestar() {
+
+        if (!disponibilidade) {
+            return false;
+        }
+
+        disponibilidade = false;
+        return true;
+    }
+
+
     @Override
     public String toString() {
-        return "Título: " + titulo
-                + " | ISBN: " + isbn
-                + "\nAutor: " + autor.getNome()
-                + "\nAno de publicação: " + anoDePublicacao
-                + " | Gênero: " + genero
-                + " | Disponibilidade: "
-                + (disponibilidade ? "Disponível" : "Emprestado");
+        return "Título: " + titulo +
+                "\nISBN: " + isbn +
+                "\nAutor: " + autor.getNome() +
+                "\nAno: " + anoDePublicacao +
+                "\nGênero: " + genero +
+                "\nDisponibilidade: " +
+                (disponibilidade ? "Disponível" : "Emprestado");
     }
 }

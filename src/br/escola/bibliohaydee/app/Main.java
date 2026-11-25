@@ -1,7 +1,10 @@
+
 package br.escola.bibliohaydee.app;
 
 import br.escola.bibliohaydee.model.Autor;
 import br.escola.bibliohaydee.model.Livro;
+import br.escola.bibliohaydee.model.Usuario;
+import br.escola.bibliohaydee.model.Emprestimo;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -15,8 +18,11 @@ public class Main {
 
         ArrayList<Autor> autores = new ArrayList<>();
         ArrayList<Livro> livros = new ArrayList<>();
+        ArrayList<Usuario> usuarios = new ArrayList<>();
+        ArrayList<Emprestimo> emprestimos = new ArrayList<>();
 
         carregarAcervoTeste(autores, livros);
+        carregarUsuariosTeste(usuarios);
 
         System.out.println("=========== BIBLIOTECA HAYDEÉ ===========");
         listarAcervo(livros);
@@ -28,6 +34,7 @@ public class Main {
             System.out.println("1 - Pesquisar por título");
             System.out.println("2 - Pesquisar por autor");
             System.out.println("3 - Gerar relatório do acervo");
+            System.out.println("4 - Registrar empréstimo");
             System.out.println("0 - Sair");
 
             System.out.print("Escolha uma opção: ");
@@ -47,6 +54,11 @@ public class Main {
 
                     case 3:
                         gerarRelatorioAcervo(livros);
+                        break;
+
+                    case 4:
+                        registrarEmprestimo(
+                                livros, usuarios, emprestimos);
                         break;
 
                     case 0:
@@ -136,6 +148,24 @@ public class Main {
         ));
     }
 
+    private static void carregarUsuariosTeste(
+            ArrayList<Usuario> usuarios) {
+
+        usuarios.add(new Usuario(
+                "Maria Silva",
+                "MAT001",
+                "ALUNO",
+                3
+        ));
+
+        usuarios.add(new Usuario(
+                "João Santos",
+                "MAT002",
+                "PROFESSOR",
+                3
+        ));
+    }
+
     private static void listarAcervo(ArrayList<Livro> livros) {
 
         System.out.println("\n=========== ACERVO ===========");
@@ -150,15 +180,18 @@ public class Main {
         }
     }
 
-    private static void pesquisarPorTitulo(ArrayList<Livro> livros) {
+    private static void pesquisarPorTitulo(
+            ArrayList<Livro> livros) {
 
-        System.out.println("\n=========== PESQUISAR POR TÍTULO ===========");
+        System.out.println(
+                "\n=========== PESQUISAR POR TÍTULO ===========");
 
         System.out.print("Digite parte do título: ");
         String termo = scanner.nextLine();
 
         if (termo == null || termo.isBlank()) {
-            System.out.println("O termo de pesquisa não pode ser vazio.");
+            System.out.println(
+                    "O termo de pesquisa não pode ser vazio.");
             return;
         }
 
@@ -184,15 +217,20 @@ public class Main {
         }
     }
 
-    private static void pesquisarPorAutor(ArrayList<Livro> livros) {
+    private static void pesquisarPorAutor(
+            ArrayList<Livro> livros) {
 
-        System.out.println("\n=========== PESQUISAR POR AUTOR ===========");
+        System.out.println(
+                "\n=========== PESQUISAR POR AUTOR ===========");
 
-        System.out.print("Digite o nome ou sobrenome do autor: ");
+        System.out.print(
+                "Digite o nome ou sobrenome do autor: ");
+
         String termo = scanner.nextLine();
 
         if (termo == null || termo.isBlank()) {
-            System.out.println("O nome do autor não pode ser vazio.");
+            System.out.println(
+                    "O nome do autor não pode ser vazio.");
             return;
         }
 
@@ -233,12 +271,13 @@ public class Main {
         }
     }
 
-
-    private static void gerarRelatorioAcervo(ArrayList<Livro> livros) {
+    private static void gerarRelatorioAcervo(
+            ArrayList<Livro> livros) {
 
         StringBuilder relatorio = new StringBuilder();
 
-        relatorio.append("\n=========== RELATÓRIO DO ACERVO ===========\n");
+        relatorio.append(
+                "\n=========== RELATÓRIO DO ACERVO ===========\n");
 
         if (livros.isEmpty()) {
 
@@ -250,16 +289,20 @@ public class Main {
 
             for (Livro livro : livros) {
 
-                relatorio.append("\nLivro ").append(numero).append("\n");
+                relatorio.append("\nLivro ")
+                        .append(numero)
+                        .append("\n");
 
                 relatorio.append("Título: ")
-                        .append(livro.getTitulo()).append("\n");
+                        .append(livro.getTitulo())
+                        .append("\n");
 
                 relatorio.append("Autor: ")
-                        .append(livro.getAutor().getNome()).append("\n");
+                        .append(livro.getAutor().getNome())
+                        .append("\n");
 
                 relatorio.append("Disponibilidade: ")
-                        .append(livro.isDisponibilidade()
+                        .append(livro.estaDisponivel()
                                 ? "Disponível" : "Emprestado")
                         .append("\n");
 
@@ -271,6 +314,75 @@ public class Main {
                     .append("\n");
         }
 
-        System.out.println(relatorio.toString());
+        System.out.println(relatorio);
+    }
+
+    private static void registrarEmprestimo(
+            ArrayList<Livro> livros,
+            ArrayList<Usuario> usuarios,
+            ArrayList<Emprestimo> emprestimos) {
+
+        System.out.println(
+                "\n=========== REGISTRAR EMPRÉSTIMO ===========");
+
+        System.out.print("Digite o ISBN do livro: ");
+        String isbn = scanner.nextLine().trim();
+
+        Livro livroEncontrado = null;
+
+        for (Livro livro : livros) {
+
+            if (livro.getIsbn().equals(isbn)) {
+                livroEncontrado = livro;
+                break;
+            }
+        }
+
+        if (livroEncontrado == null) {
+            System.out.println("Livro não encontrado.");
+            return;
+        }
+
+        System.out.print("Digite a matrícula do usuário: ");
+        String matricula = scanner.nextLine().trim();
+
+        Usuario usuarioEncontrado = null;
+
+        for (Usuario usuario : usuarios) {
+
+            if (usuario.getMatricula().equals(matricula)) {
+                usuarioEncontrado = usuario;
+                break;
+            }
+        }
+
+        if (usuarioEncontrado == null) {
+            System.out.println("Usuário não encontrado.");
+            return;
+        }
+
+        if (!usuarioEncontrado.podeEmprestar()) {
+            System.out.println(
+                    "Usuário atingiu o limite de empréstimos.");
+            return;
+        }
+
+        if (!livroEncontrado.emprestar()) {
+            System.out.println(
+                    "Livro indisponível para empréstimo.");
+            return;
+        }
+
+        usuarioEncontrado.registrarEmprestimo();
+
+        Emprestimo novoEmprestimo =
+                new Emprestimo(livroEncontrado, usuarioEncontrado);
+
+        emprestimos.add(novoEmprestimo);
+
+        System.out.println(
+                "\nEmpréstimo registrado com sucesso!");
+
+        System.out.println(novoEmprestimo);
     }
 }

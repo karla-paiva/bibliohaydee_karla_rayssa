@@ -3,16 +3,16 @@ package br.escola.bibliohaydee.model;
 
 public class Usuario {
 
-    public static final int LIMITE_PADRAO = 3;
-
     private String nome;
     private String matricula;
     private String tipo;
     private Integer limiteEmprestimos;
-    private Integer emprestimosAtivos;
+    private int emprestimosAtivos;
 
-    public Usuario(String nomeUsuario, String matriculaUsuario,
-                   String tipoUsuario, Integer limiteUsuario) {
+    public Usuario(String nomeUsuario,
+                   String matriculaUsuario,
+                   String tipoUsuario,
+                   Integer limiteUsuario) {
 
         if (!nomeValido(nomeUsuario)) {
             throw new IllegalArgumentException(
@@ -43,19 +43,8 @@ public class Usuario {
         emprestimosAtivos = 0;
     }
 
-    public Usuario(String nomeUsuario, String matriculaUsuario,
-                   String tipoUsuario) {
-
-        this(nomeUsuario, matriculaUsuario, tipoUsuario,
-                LIMITE_PADRAO);
-    }
-
-    private static boolean nomeValido(String nome) {
+    private boolean nomeValido(String nome) {
         return nome != null && !nome.isBlank();
-    }
-
-    private static boolean limiteValido(int limite) {
-        return limite >= 1;
     }
 
     public String getNome() {
@@ -74,34 +63,24 @@ public class Usuario {
         return limiteEmprestimos;
     }
 
-    public Integer getEmprestimosAtivos() {
+    public int getEmprestimosAtivos() {
         return emprestimosAtivos;
     }
 
-    public boolean setNome(String novoNome) {
-        if (!nomeValido(novoNome)) {
-            return false;
-        }
-
-        nome = novoNome.trim();
-        return true;
+    public boolean podeEmprestar() {
+        return emprestimosAtivos < limiteEmprestimos;
     }
 
-    public boolean setLimiteEmprestimos(int novoLimite) {
-        if (!limiteValido(novoLimite)) {
-            return false;
-        }
-
-        limiteEmprestimos = novoLimite;
-        return true;
+    public void registrarEmprestimo() {
+        emprestimosAtivos++;
     }
 
     @Override
     public String toString() {
-        return "Nome: " + nome
-                + " | Matrícula: " + matricula
-                + " | Tipo: " + tipo
-                + " | Limite de empréstimos: " + limiteEmprestimos
-                + " | Empréstimos ativos: " + emprestimosAtivos;
+        return "Nome: " + nome +
+                "\nMatrícula: " + matricula +
+                "\nTipo: " + tipo +
+                "\nLimite de empréstimos: " + limiteEmprestimos +
+                "\nEmpréstimos ativos: " + emprestimosAtivos;
     }
 }
